@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IES Martín Rivero - Tecnología 2º ESO</title>
+    
+    <!-- Librería MathJax para fórmulas matemáticas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #004a99;
+            --secondary: #007bff;
+            --accent: #e67e22;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --white: #ffffff;
+            --gray: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #e9ecef;
+            color: var(--dark);
+        }
+
+        header.main-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .ies-title {
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        nav {
+            background: var(--white);
+            display: flex;
+            justify-content: center;
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: none;
+            border: 2px solid transparent;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: var(--primary);
+        }
+
+        nav button.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        .formula-container {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .formula-display {
+            text-align: center;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .formula-legend {
+            font-size: 0.95rem;
+            border-top: 1px solid #5d6d7e;
+            padding-top: 0.8rem;
+        }
+
+        .formula-legend ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 5px;
+        }
+
+        .important-alert {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            background: #f0f7ff;
+        }
+
+        .quiz-box {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .question-header {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .options-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-button {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .option-button.correct {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+            font-weight: bold;
+        }
+
+        .option-button.wrong {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        .option-button.selected {
+            border-color: var(--secondary);
+            background: #e7f1ff;
+        }
+
+        .action-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+
+        .result-screen {
+            text-align: center;
+            border: 5px solid var(--primary);
+            padding: 3rem;
+        }
+
+        .score-badge {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .hidden { display: none; }
+        
+        /* Estilos adicionales para la teoría ampliada */
+        .theory-list {
+            margin-left: 20px;
+            margin-bottom: 1rem;
+        }
+        .theory-list li {
+            margin-bottom: 0.5rem;
+        }
+        .type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-right: 5px;
+        }
+        .concept-highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<header class="main-header">
+    <h1 class="ies-title">IES Martín Rivero</h1>
+    <div class="subtitle">Tecnología y Digitalización | Tema 6: Máquinas y Mecanismos</div>
+</header>
+
+<nav>
+    <button id="btn-theory" class="active" onclick="showTab('theory')">📚 Repaso de Teoría</button>
+    <button id="btn-practice" onclick="showTab('practice')">✍️ Test (20 Preguntas)</button>
+</nav>
+
+<div class="main-container">
+    
+    <!-- SECCIÓN DE REPASO DE TEORÍA -->
+    <div id="theory-section">
+        <article class="content-card">
+            <h2>1. Conceptos Fundamentales</h2>
+            <p>Una <strong>máquina</strong> es un conjunto de elementos fijos y móviles que permiten reducir el esfuerzo necesario para realizar un trabajo útil. El ser humano las utiliza para afrontar tareas que superan su fuerza biológica.</p>
+            
+            <h3>El Objetivo: ¿Para qué sirven?</h3>
+            <ul class="theory-list">
+                <li><strong>Reducir el esfuerzo:</strong> Aplicar menos fuerza para mover cargas pesadas.</li>
+                <li><strong>Ahorrar tiempo:</strong> Realizar tareas complejas de forma más rápida.</li>
+                <li><strong>Aumentar la comodidad:</strong> Facilitar tareas repetitivas o peligrosas.</li>
+            </ul>
+
+            <h3>Clasificación por Complejidad</h3>
+            <ul class="theory-list">
+                <li><strong>Máquinas Simples:</strong> Realizan su trabajo en un solo paso (Ej: tijeras, palanca, rueda).</li>
+                <li><strong>Máquinas Compuestas:</strong> Realizan el trabajo encadenando muchos pasos o mecanismos (Ej: bicicleta, coche, grúa).</li>
+            </ul>
+
+            <h3>Componentes de una Máquina</h3>
+            <p>Toda máquina está compuesta por tres partes esenciales:</p>
+            <ol class="theory-list">
+                <li><strong>Elemento Motriz:</strong> Es donde se aplica la fuerza o energía inicial (Fuerza muscular, eléctrica o natural como el viento).</li>
+                <li><strong>Mecanismo:</strong> Dispositivos que transmiten o transforman el movimiento desde el motor al receptor. Los mecanismos no generan energía, la gestionan.</li>
+                <li><strong>Elemento Receptor:</strong> Es el elemento que recibe la fuerza final para realizar el trabajo útil (perforar, mover, cortar, etc.).</li>
+            </ol>
+
+            <h3>Prerrequisito: Tipos de Movimiento</h3>
+            <p>Para entender los mecanismos, debemos distinguir tres tipos de movimiento:</p>
+            <ul class="theory-list">
+                <li><strong>Movimiento Lineal:</strong> Desplazamiento en línea recta y un solo sentido.</li>
+                <li><strong>Movimiento Circular:</strong> Desplazamiento en círculo (rotación).</li>
+                <li><strong>Movimiento Alternativo:</strong> Desplazamiento de vaivén en línea recta (ida y vuelta).</li>
+            </ul>
+        </article>
+
+        <article class="content-card">
+            <h2>2. Mecanismos de Transmisión Lineal</h2>
+            <p>Son aquellos en los que el movimiento de entrada es recto y el de salida también es recto.</p>
+            
+            <h3>La Palanca: Ley de Equilibrio</h3>
+            <p>Barra rígida que gira en torno a un punto de apoyo (Fulcro). Se usa para vencer una resistencia (R) aplicando una fuerza o potencia (F).</p>
+            <div class="formula-container">
+                <div class="formula-display">\( F \cdot d = R \cdot r \)</div>
+                <div class="formula-legend">
+                    <strong>Significado de las variables:</strong>
+                    <ul>
+                        <li><strong>\( F \):</strong> Fuerza o Potencia aplicada (Newtons).</li>
+                        <li><strong>\( d \):</strong> Brazo de fuerza (distancia de F al fulcro).</li>
+                        <li><strong>\( R \):</strong> Resistencia o carga (Newtons).</li>
+                        <li><strong>\( r \):</strong> Brazo de resistencia (distancia de R al fulcro).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Tipos de Palancas según el Grado</h3>
+            <ul class="theory-list">
+                <li><span class="type-badge">1º Grado</span> El <strong>Punto de Apoyo</strong> está en el centro (Ej: Tijeras, balancín).</li>
+                <li><span class="type-badge">2º Grado</span> La <strong>Resistencia</strong> está en el centro (Ej: Cascanueces, carretilla). Permite mover grandes cargas con poco esfuerzo.</li>
+                <li><span class="type-badge">3º Grado</span> La <strong>Fuerza</strong> está en el centro (Ej: Pinzas, caña de pescar). No ahorran esfuerzo, pero dan precisión o alcance.</li>
+            </ul>
+
+            <h3>Poleas y Polipastos</h3>
+            <ul class="theory-list">
+                <li><strong>Polea Fija:</strong> Solo cambia la dirección de la fuerza. No reduce el esfuerzo (\( F = R \)).</li>
+                <li><strong>Polea Móvil:</strong> Reduce el esfuerzo a la mitad (\( F = R / 2 \)). Un extremo de la cuerda es fijo.</li>
+                <li><strong>Polipastos:</strong> Montaje de varias poleas fijas y móviles.</li>
+            </ul>
+            <div class="formula-container">
+                <div class="formula-display">\( F = \frac{R}{2 \cdot n} \)</div>
+                <div class="formula-legend">
+                    <strong>Donde:</strong>
+                    <ul>
+                        <li><strong>\( n \):</strong> Es el número de poleas móviles del sistema.</li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+
+        <article class="content-card">
+            <h2>3. Mecanismos de Transmisión Circular</h2>
+            <p>Transmiten el movimiento de rotación entre ejes. El sentido de giro puede cambiar según el sistema.</p>
+            
+            <h3>Ruedas de Fricción y Poleas con Correa</h3>
+            <p>Transmiten el giro por contacto directo o mediante una correa elástica.</p>
+            <div class="formula-container">
+                <div class="formula-display">\( n_1 \cdot D_1 = n_2 \cdot D_2 \)</div>
+                <div class="formula-legend">
+                    <ul>
+                        <li><strong>\( n \):</strong> Velocidad de giro (rpm).</li>
+                        <li><strong>\( D \):</strong> Diámetro de la rueda o polea.</li>
+                        <li><strong>Sentido:</strong> Las ruedas de fricción giran en sentidos opuestos; las poleas con correa giran en el mismo sentido (salvo que la correa esté cruzada).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Engranajes y Piñones con Cadena</h3>
+            <p>Ruedas dentadas que encajan entre sí o mediante una cadena. No patinan.</p>
+            <div class="formula-container">
+                <div class="formula-display">\( n_1 \cdot Z_1 = n_2 \cdot Z_2 \)</div>
+                <div class="formula-legend">
+                    <ul>
+                        <li><strong>\( Z \):</strong> Número de dientes de cada rueda.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Relación de Transmisión (i)</h3>
+            <p>Indica cuánto varía la velocidad entre la entrada y la salida.</p>
+            <div class="formula-container">
+                <div class="formula-display">\( i = \frac{n_2}{n_1} = \frac{D_1}{D_2} = \frac{Z_1}{Z_2} \)</div>
+                <div class="formula-legend">
+                    <ul>
+                        <li><strong>Sistemas Reductores:</strong> \( i < 1 \) (La salida va más lenta, gana fuerza).</li>
+                        <li><strong>Sistemas Multiplicadores:</strong> \( i > 1 \) (La salida va más rápido, pierde fuerza).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Tornillo sin fin</h3>
+            <p>Un tornillo (motriz) engrana con una rueda dentada (conducida). Es un reductor de velocidad extremo y no es reversible.</p>
+        </article>
+
+        <article class="content-card">
+            <h2>4. Transformación de Movimiento</h2>
+            <p>A diferencia de los de transmisión, estos mecanismos <strong>cambian la naturaleza del movimiento</strong> (de giratorio a lineal o viceversa). Son "traductores" de movimiento.</p>
+            
+            <h3>4.1. Giro a Lineal Continuo</h3>
+            <ul class="theory-list">
+                <li><strong>Tornillo y Tuerca:</strong> Al girar el tornillo, la tuerca se desplaza en línea recta. El tornillo transforma el giro en una <span class="concept-highlight">fuerza de presión inmensa</span>. Aplicaciones: Prensa, gato de coche.</li>
+                <li><strong>Piñón-Cremallera:</strong> El giro del piñón (rueda dentada) desplaza linealmente la cremallera (barra dentada). 
+                    <ul>
+                        <li><strong>Es Reversible:</strong> El movimiento lineal de la barra puede hacer girar el piñón.</li>
+                        <li><strong>Aplicación Real:</strong> La <span class="concept-highlight">dirección de un automóvil</span> (el volante gira el piñón y la cremallera mueve las ruedas).</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>4.2. Giro a Lineal Alternativo (Vaivén)</h3>
+            <p>El reto es convertir un giro constante en un "latido" mecánico o ciclo de ida y vuelta.</p>
+            <ul class="theory-list">
+                <li><strong>Biela-Manivela:</strong> El "corazón" de la máquina. Compuesto por:
+                    <ul>
+                        <li><span class="type-badge">Manivela</span> Realiza el movimiento circular (giro).</li>
+                        <li><span class="type-badge">Biela</span> Barra de unión que transmite el movimiento.</li>
+                        <li><span class="type-badge">Émbolo/Pistón</span> Realiza el movimiento lineal de vaivén.</li>
+                        <li><strong>Reversibilidad:</strong> <span class="concept-highlight">SÍ es reversible</span>. Transforma circular en lineal (motor de coche) o lineal en circular (locomotora de vapor).</li>
+                    </ul>
+                </li>
+                <li><strong>Cigüeñal:</strong> Definido como un <span class="concept-highlight">conjunto de manivelas asociadas</span> sobre un mismo eje. 
+                    <ul>
+                        <li>Cada "codo" del eje actúa como una manivela conectada a una biela.</li>
+                        <li><strong>Aplicación Estrella:</strong> Motor de combustión interna, coordinando varios pistones a la vez.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>4.3. El Programador Mecánico: Leva y Excéntrica</h3>
+            <p>Sirven para que un seguidor realice un movimiento específico según la forma de la rueda.</p>
+            <ul class="theory-list">
+                <li><strong>Leva:</strong> Rueda de forma no circular (pera, huevo, etc.). Al girar, su perfil empuja a un <span class="type-badge">seguidor</span> que describe un movimiento de vaivén.</li>
+                <li><strong>Excéntrica:</strong> Rueda circular cuyo eje de giro <strong>no coincide</strong> con su centro geométrico.</li>
+                <li><strong>Punto Crítico:</strong> <span class="concept-highlight">NO son reversibles</span>. El giro de la leva mueve al seguidor, pero si empujamos al seguidor, la leva no girará.</li>
+            </ul>
+        </article>
+    </div>
+
+    <!-- SECCIÓN DE PRÁCTICA -->
+    <div id="practice-section" class="hidden">
+        <div id="quiz-intro" class="content-card" style="text-align: center;">
+            <h2>Simulador de Test</h2>
+            <div class="important-alert">❗ ESCRIBE TU NOMBRE PARA COMENZAR</div>
+            <div class="input-group">
+                <input type="text" id="student-name" placeholder="Tu nombre y apellidos..." autocomplete="off">
+            </div>
+            <button class="action-button" onclick="validateAndStart()">Iniciar Test</button>
+        </div>
+
+        <div id="quiz-container" class="quiz-box hidden">
+            <div class="question-header">
+                <span id="q-progress">Pregunta 1 de 20</span>
+                <span id="student-display" style="font-weight: bold; color: var(--accent);"></span>
+            </div>
+            <div id="q-container">
+                <div class="question-text" id="q-text"></div>
+                <div class="options-list" id="q-options"></div>
+            </div>
+            <button class="action-button" id="next-btn" onclick="handleButtonClick()">Comprobar Respuesta</button>
+        </div>
+
+        <div id="quiz-results" class="content-card result-screen hidden">
+            <h2>TEST FINALIZADO</h2>
+            <h3 id="res-student-name"></h3>
+            <div class="score-badge" id="score-val"></div>
+            <div id="score-msg" style="font-weight: bold; margin-bottom: 2rem;"></div>
+            <button class="action-button" style="background:var(--secondary);" onclick="resetQuiz()">Reintentar Test</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const DATABASE = [
+        { q: "¿Cuál es la unidad de la fuerza en el Sistema Internacional?", o: ["Kilogramo", "Julio", "Newton", "Vatio"], c: 2 },
+        { q: "¿En qué palanca se encuentra la resistencia en medio?", o: ["1er Grado", "2º Grado", "3er Grado", "Ninguna"], c: 1 },
+        { q: "¿Qué es un mecanismo?", o: ["La parte de la máquina que aporta energía", "El conjunto de elementos que transmiten o transforman el movimiento", "El objeto final que recibe la fuerza", "Cualquier herramienta manual simple"], c: 1 },
+        { q: "El mecanismo biela-manivela es...", o: ["Solo circular", "No reversible", "Reversible", "Solo lineal"], c: 2 },
+        { q: "¿Cómo se llama la distancia entre el punto de apoyo y la fuerza que aplicamos en una palanca?", o: ["Brazo de resistencia", "Brazo de potencia", "Fulcro", "Eje de giro"], c: 1 },
+        { q: "¿Qué tipo de movimiento realiza el seguidor de una leva?", o: ["Movimiento circular continuo", "Movimiento lineal alternativo o de vaivén", "Movimiento de rotación", "Movimiento helicoidal"], c: 1 },
+        { q: "¿Qué componente aporta la energía inicial?", o: ["Transmisor", "Motor", "Receptor", "Biela"], c: 1 },
+        { q: "Un tornillo sin fin es un sistema...", o: ["Muy rápido", "Reductor extremo", "Reversible", "Lineal"], c: 1 },
+        { q: "¿Qué ocurre en una palanca si alejamos la potencia (fuerza aplicada) del punto de apoyo?", o: ["Necesitamos aplicar más fuerza", "Necesitamos aplicar menos fuerza", "La carga se vuelve más pesada", "El brazo de potencia disminuye"], c: 1 },
+        { q: "¿Qué transforma el piñón-cremallera?", o: ["Giro en vaivén", "Giro en lineal continuo", "Lineal en calor", "Nada"], c: 1 },
+        { q: "¿Qué sistema se usa en las bicicletas para transmitir el movimiento entre ejes paralelos?", o: ["Poleas con correa", "Cadena y piñones", "Tornillo sin fin", "Ruedas de fricción"], c: 1 },
+        { q: "En la fórmula i = Z1/Z2, ¿qué es Z1?", o: ["Velocidad", "Número de dientes rueda motriz", "Diámetro", "Dientes rueda conducida"], c: 1 },
+        { q: "¿Para qué sirve un trinquete?", o: ["Cambiar velocidad", "Girar en un solo sentido", "Frenar en seco", "Transformar circular en lineal"], c: 1 },
+        { q: "¿Cuál es un ejemplo de palanca de 2º grado?", o: ["Tijeras", "Alicates", "Carretilla", "Caña de pescar"], c: 2 },
+        { q: "La leva es un mecanismo...", o: ["Reversible", "No reversible", "Circular puro", "Lineal puro"], c: 1 },
+        { q: "El cigüeñal está formado por varias...", o: ["Poleas", "Correas", "Manivela", "Llantas"], c: 2 },
+        { q: "¿Cómo se llama la rueda circular cuyo eje de giro no coincide con su centro geométrico?", o: ["Engranaje loco", "Excéntrica", "Polea móvil", "Leva de pera"], c: 1 },
+        { q: "Si la velocidad de la rueda de salida es menor que la de entrada, el sistema es:", o: ["Multiplicador", "Reductor", "Lineal", "Reversible"], c: 1 },
+        { q: "Una polea fija sirve para...", o: ["Reducir el esfuerzo a la mitad", "Cambiar la dirección de la fuerza", "Multiplicar la fuerza por dos", "Nada"], c: 1 },
+        { q: "El sacacorchos de alas usa el sistema...", o: ["Leva", "Piñón-cremallera", "Biela-manivela", "Tornillo sin fin"], c: 1 }
+    ];
+
+    let currentTest = [];
+    let currentIdx = 0;
+    let userScore = 0;
+    let selectedIdx = null;
+    let studentName = "";
+    let isEvaluated = false;
+
+    function showTab(tab) {
+        document.getElementById('theory-section').classList.toggle('hidden', tab !== 'theory');
+        document.getElementById('practice-section').classList.toggle('hidden', tab !== 'practice');
+        document.getElementById('btn-theory').classList.toggle('active', tab === 'theory');
+        document.getElementById('btn-practice').classList.toggle('active', tab === 'practice');
+    }
+
+    function validateAndStart() {
+        const input = document.getElementById('student-name');
+        if (input.value.trim().length < 3) return alert("Por favor, introduce tu nombre.");
+        studentName = input.value.trim().toUpperCase();
+        
+        currentTest = [...DATABASE].sort(() => 0.5 - Math.random()).slice(0, 20);
+        currentIdx = 0;
+        userScore = 0;
+
+        document.getElementById('quiz-intro').classList.add('hidden');
+        document.getElementById('quiz-results').classList.add('hidden');
+        document.getElementById('quiz-container').classList.remove('hidden');
+        document.getElementById('student-display').innerText = studentName;
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        isEvaluated = false;
+        selectedIdx = null;
+        const qData = currentTest[currentIdx];
+        document.getElementById('q-progress').innerText = `Pregunta ${currentIdx + 1} de 20`;
+        document.getElementById('q-text').innerText = qData.q;
+        const optionsDiv = document.getElementById('q-options');
+        optionsDiv.innerHTML = '';
+        
+        qData.o.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-button';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(i, btn);
+            optionsDiv.appendChild(btn);
+        });
+        document.getElementById('next-btn').innerText = "Comprobar Respuesta";
+    }
+
+    function selectOption(idx, btn) {
+        if (isEvaluated) return;
+        selectedIdx = idx;
+        document.querySelectorAll('.option-button').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function handleButtonClick() {
+        if (selectedIdx === null) return alert("Por favor, selecciona una opción.");
+        
+        if (!isEvaluated) {
+            evaluateAnswer();
+        } else {
+            currentIdx++;
+            if (currentIdx < 20) {
+                renderQuestion();
+                window.scrollTo(0, document.getElementById('quiz-container').offsetTop - 50);
+            } else {
+                finishQuiz();
+            }
+        }
+    }
+
+    function evaluateAnswer() {
+        isEvaluated = true;
+        const correctIdx = currentTest[currentIdx].c;
+        const buttons = document.querySelectorAll('.option-button');
+        
+        buttons.forEach((btn, i) => {
+            if (i === correctIdx) btn.classList.add('correct');
+            if (i === selectedIdx && i !== correctIdx) btn.classList.add('wrong');
+        });
+
+        if (selectedIdx === correctIdx) userScore++;
+        document.getElementById('next-btn').innerText = (currentIdx === 19) ? "Ver Resultados Finales" : "Siguiente Pregunta";
+    }
+
+    function finishQuiz() {
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('quiz-results').classList.remove('hidden');
+        document.getElementById('res-student-name').innerText = studentName;
+        document.getElementById('score-val').innerText = `${userScore} / 20`;
+        document.getElementById('score-msg').innerText = userScore >= 10 ? "¡HAS APROBADO!" : "DEBES REPASAR MÁS.";
+        window.scrollTo(0, 0);
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-results').classList.add('hidden');
+        document.getElementById('quiz-intro').classList.remove('hidden');
+        document.getElementById('student-name').focus();
+    }
+</script>
+
+</body>
+</html>
